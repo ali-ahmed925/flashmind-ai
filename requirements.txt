@@ -1,0 +1,8 @@
+flask
+langchain
+langchain-openai
+langchain-text-splitters
+openai
+pypdf2
+python-dotenv
+tiktoken
