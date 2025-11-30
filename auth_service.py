@@ -147,7 +147,7 @@ class AuthService:
             user['streak'] = 1
             user['last_activity_date'] = today
         else:
-            last_date = datetime.fromisoformat(last_activity).date()
+            last_date = datetime.strptime(last_activity, '%Y-%m-%d').date()
             current_date = datetime.now().date()
             days_diff = (current_date - last_date).days
             
