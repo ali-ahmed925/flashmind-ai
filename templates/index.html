@@ -7,6 +7,7 @@
     <title>FlashMind | AI Learning Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/leaderboard.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -95,6 +96,9 @@
                 </li>
                 <li data-view="upload">
                     <i class="fa-solid fa-plus"></i> <span>Create</span>
+                </li>
+                <li data-view="leaderboard">
+                    <i class="fa-solid fa-trophy"></i> <span>Leaderboard</span>
                 </li>
                 <li data-view="profile">
                     <i class="fa-solid fa-user"></i> <span>Profile</span>
@@ -222,7 +226,8 @@
             <!-- Study View -->
             <section id="view-study" class="view">
                 <div class="study-header">
-                    <button class="back-to-dash secondary-btn"><i class="fa-solid fa-arrow-left"></i> Exit</button>
+                    <button class="back-to-dash secondary-btn"><i class="fa-solid fa-arrow-left"></i>
+                        Exit</button>
                     <div class="progress-info">
                         <div class="progress-text">
                             Card <span id="current-card-num">1</span> of <span id="total-cards-num">10</span>
@@ -298,6 +303,34 @@
                         <div class="glass-panel stat-card">
                             <h3>Decks Completed</h3>
                             <p class="big-number" id="profile-decks">0</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Leaderboard View -->
+            <section id="view-leaderboard" class="view">
+                <div class="leaderboard-container">
+                    <header class="view-header">
+                        <div class="welcome-text">
+                            <h1>🏆 Global Leaderboard</h1>
+                            <p>Compete with learners worldwide</p>
+                        </div>
+                        <button id="refresh-leaderboard-btn" class="icon-btn">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </header>
+
+                    <!-- Leaderboard Table -->
+                    <div class="leaderboard-table-container glass-panel">
+                        <div class="table-header">
+                            <div class="header-cell rank-col">Rank</div>
+                            <div class="header-cell user-col">Learner</div>
+                            <div class="header-cell level-col">Level</div>
+                            <div class="header-cell xp-col">Total XP</div>
+                        </div>
+                        <div class="leaderboard-body" id="leaderboard-list">
+                            <!-- Dynamically populated rows -->
                         </div>
                     </div>
                 </div>

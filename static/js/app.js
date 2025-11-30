@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupStudyControls();
     setupCustomCursor();
     setupCompletionModal();
+    setupLeaderboard();
 
     // --- Authentication ---
     function checkAuth() {
@@ -554,5 +555,108 @@ document.addEventListener('DOMContentLoaded', () => {
         generateBtn.disabled = true;
         state.currentFile = null;
         state.currentFileName = '';
+    }
+
+    // --- Leaderboard Logic ---
+    function setupLeaderboard() {
+        const refreshBtn = document.getElementById('refresh-leaderboard-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                refreshBtn.querySelector('i').classList.add('fa-spin');
+                fetchLeaderboard().then(() => {
+                    setTimeout(() => {
+                        refreshBtn.querySelector('i').classList.remove('fa-spin');
+                    }, 500);
+                });
+            });
+        }
+
+        // Initial fetch if on leaderboard view
+        const activeView = document.querySelector('.view.active-view');
+        if (activeView && activeView.id === 'view-leaderboard') {
+            fetchLeaderboard();
+        }
+
+        // Add listener for view switching to leaderboard
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const viewName = link.getAttribute('data-view');
+                if (viewName === 'leaderboard') {
+                    fetchLeaderboard();
+                }
+            });
+        });
+    }
+
+    async function fetchLeaderboard() {
+        try {
+            const response = await fetch('/api/leaderboard');
+            const data = await response.json();
+
+            if (data.leaderboard) {
+                renderLeaderboardList(data.leaderboard);
+
+                // Update current user rank in state if possible
+                if (state.user) {
+                    const userEntry = data.leaderboard.find(u => u.id === state.user.id);
+                    if (userEntry) {
+                        state.user.rank = userEntry.rank;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching leaderboard:', error);
+        }
+    }
+
+    function renderLeaderboardList(users) {
+        const listContainer = document.getElementById('leaderboard-list');
+        if (!listContainer) return;
+
+        listContainer.innerHTML = '';
+
+        if (users.length === 0) {
+            listContainer.innerHTML = `
+                <div class="leaderboard-empty">
+                    <i class="fa-solid fa-users-slash"></i>
+                    <p>No more learners yet. Be the first!</p>
+                </div>
+            `;
+            return;
+        }
+
+        users.forEach(user => {
+            const isCurrentUser = state.user && user.id === state.user.id;
+            const row = document.createElement('div');
+            row.className = `table-row ${isCurrentUser ? 'current-user' : ''}`;
+            row.setAttribute('data-user-id', user.id);
+
+            // Rank styling
+            let rankClass = '';
+            if (user.rank === 1) rankClass = 'rank-1 top-3-rank';
+            else if (user.rank === 2) rankClass = 'rank-2 top-3-rank';
+            else if (user.rank === 3) rankClass = 'rank-3 top-3-rank';
+
+            row.innerHTML = `
+                <div class="rank-cell">
+                    <div class="${rankClass}">${user.rank}</div>
+                </div>
+                <div class="user-cell">
+                    <div class="user-avatar-small">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    ${user.username}
+                    ${isCurrentUser ? '<span class="you-badge">YOU</span>' : ''}
+                </div>
+                <div class="level-cell">
+                    <span class="level-badge">Lvl ${user.current_level}</span>
+                </div>
+                <div class="xp-cell">
+                    ${user.total_xp} XP
+                </div>
+            `;
+
+            listContainer.appendChild(row);
+        });
     }
 });
