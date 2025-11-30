@@ -152,5 +152,11 @@ def complete_deck():
         return jsonify(result)
     return jsonify({'error': 'Failed to complete deck'}), 500
 
+@app.route('/api/leaderboard', methods=['GET'])
+def get_leaderboard():
+    """Get global leaderboard ranked by XP"""
+    leaderboard = AuthService.get_leaderboard()
+    return jsonify({'leaderboard': leaderboard})
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

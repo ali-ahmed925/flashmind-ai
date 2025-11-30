@@ -208,3 +208,28 @@ class AuthService:
         AuthService.update_user(user_id, user)
         return user
 
+    @staticmethod
+    def get_leaderboard():
+        """Get all users ranked by total XP"""
+        users = AuthService.get_all_users()
+        
+        # Remove sensitive data and prepare for leaderboard
+        leaderboard_users = []
+        for user in users:
+            leaderboard_users.append({
+                'id': user.get('id'),
+                'username': user.get('username'),
+                'total_xp': user.get('total_xp', 0),
+                'current_level': user.get('current_level', 1),
+                'streak': user.get('streak', 0),
+                'decks_completed': user.get('decks_completed', 0)
+            })
+        
+        # Sort by total_xp descending
+        leaderboard_users.sort(key=lambda x: x['total_xp'], reverse=True)
+        
+        # Add rank numbers
+        for idx, user in enumerate(leaderboard_users):
+            user['rank'] = idx + 1
+        
+        return leaderboard_users

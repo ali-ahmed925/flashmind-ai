@@ -10,227 +10,302 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <div class="logo">
-        <i class="fa-solid fa-bolt"></i>
-        <span>FlashMind</span>
+</head>
+
+<body>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="grid-overlay"></div>
     </div>
-    <ul class="nav-links">
-        <li class="active" data-view="dashboard">
-            <i class="fa-solid fa-house"></i> <span>Dashboard</span>
-        </li>
-        <li data-view="upload">
-            <i class="fa-solid fa-plus"></i> <span>Create</span>
-        </li>
-        <li data-view="profile">
-            <i class="fa-solid fa-user"></i> <span>Profile</span>
-        </li>
-    </ul>
-    <div class="nav-footer">
-        <button id="theme-toggle" class="icon-btn">
-            <i class="fa-solid fa-moon"></i>
-        </button>
-        <button id="logout-btn" class="icon-btn">
-            <i class="fa-solid fa-right-from-bracket"></i>
-        </button>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <h2 id="auth-title">Welcome to FlashMind</h2>
+            <div id="login-form" class="auth-form">
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button id="login-btn" class="primary-btn">Login</button>
+                <p class="auth-switch">Don't have an account? <span id="show-register">Register</span></p>
+            </div>
+            <div id="register-form" class="auth-form hidden">
+                <input type="text" id="register-username" placeholder="Username" required>
+                <input type="email" id="register-email" placeholder="Email" required>
+                <input type="password" id="register-password" placeholder="Password" required>
+                <button id="register-btn" class="primary-btn">Register</button>
+                <p class="auth-switch">Already have an account? <span id="show-login">Login</span></p>
+            </div>
+            <p id="auth-error" class="error-message hidden"></p>
+        </div>
     </div>
-    </nav>
 
-    <main class="content-area">
-        <!-- Dashboard View -->
-        <section id="view-dashboard" class="view active-view">
-            <header class="view-header">
-                <div class="welcome-text">
-                    <h1>Hello, <span id="user-name-display">Student</span>! 👋</h1>
-                    <p>Ready to master something new today?</p>
+    <!-- Completion Modal -->
+    <div id="completion-modal" class="modal hidden">
+        <div class="modal-content glass-panel completion-modal-content">
+            <div class="completion-icon">🎉</div>
+            <h2>Deck Completed!</h2>
+            <div class="completion-stats">
+                <div class="stat-row">
+                    <span class="stat-label">XP Earned:</span>
+                    <span class="stat-value gradient-text" id="completion-xp">+200 XP</span>
                 </div>
-                <div class="user-stats-pill glass-panel">
-                    <div class="stat-item">
-                        <i class="fa-solid fa-fire text-orange"></i>
-                        <span id="streak-display">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fa-solid fa-star text-yellow"></i>
-                        <span id="xp-display">0</span> XP
-                    </div>
-                    <div class="stat-item">
-                        <i class="fa-solid fa-trophy text-purple"></i>
-                        Lvl <span id="level-display">1</span>
-                    </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total XP:</span>
+                    <span class="stat-value" id="completion-total-xp">450 XP</span>
                 </div>
-            </header>
-
-            <div class="dashboard-grid">
-                <div class="glass-panel stat-card">
-                    <h3>Decks Created</h3>
-                    <p class="big-number" id="decks-count">0</p>
+                <div class="stat-row">
+                    <span class="stat-label">Level:</span>
+                    <span class="stat-value" id="completion-level">Level 3</span>
                 </div>
-                <div class="glass-panel stat-card">
-                    <h3>Cards Mastered</h3>
-                    <p class="big-number" id="cards-mastered">0</p>
+                <div class="stat-row">
+                    <span class="stat-label">Cards Reviewed:</span>
+                    <span class="stat-value" id="completion-cards">20 cards</span>
                 </div>
-                <div class="glass-panel action-card" id="quick-create-btn">
-                    <div class="icon-circle">
-                        <i class="fa-solid fa-plus"></i>
-                    </div>
-                    <h3>Create New Deck</h3>
-                    <p>Upload a PDF to start</p>
+                <div class="stat-row">
+                    <span class="stat-label">Streak:</span>
+                    <span class="stat-value" id="completion-streak">🔥 7 days</span>
                 </div>
             </div>
-        </section>
-
-        <!-- Upload View -->
-        <section id="view-upload" class="view">
-            <div class="upload-container">
-                <div class="hero-text">
-                    <h1>Create Flashcards</h1>
-                    <p>AI-powered generation from your documents</p>
-                </div>
-
-                <div class="upload-area glass-panel" id="drop-zone">
-                    <input type="file" id="file-input" accept=".pdf" hidden>
-                    <div class="upload-content">
-                        <div class="upload-icon-wrapper">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                        </div>
-                        <h3>Drag & Drop PDF</h3>
-                        <p>or click to browse</p>
-                    </div>
-                </div>
-
-                <div class="options-panel glass-panel">
-                    <div class="option-group">
-                        <label>Difficulty Level</label>
-                        <div class="difficulty-selector">
-                            <div class="difficulty-option" data-value="easy">
-                                <i class="fa-solid fa-smile"></i>
-                                <span>Easy</span>
-                            </div>
-                            <div class="difficulty-option active" data-value="medium">
-                                <i class="fa-solid fa-meh"></i>
-                                <span>Medium</span>
-                            </div>
-                            <div class="difficulty-option" data-value="hard">
-                                <i class="fa-solid fa-fire"></i>
-                                <span>Hard</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="option-group">
-                        <label>Number of Cards: <span id="card-count-display">20</span></label>
-                        <input type="range" id="card-count-slider" min="5" max="50" value="20" step="5">
-                        <div class="slider-labels">
-                            <span>5</span>
-                            <span>50</span>
-                        </div>
-                    </div>
-                    <button id="generate-btn" class="primary-btn" disabled>
-                        Generate Flashcards <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    </button>
-                </div>
+            <div id="level-up-badge" class="level-up-badge hidden">
+                <h3>🎊 LEVEL UP! 🎊</h3>
+                <p>You reached Level <span id="new-level">4</span>!</p>
             </div>
-        </section>
-
-        <!-- Loading View -->
-        <section id="view-loading" class="view">
-            <div class="loader-container">
-                <div class="loader-ring"></div>
-                <h2 class="gradient-text">Generating Knowledge...</h2>
-                <p id="loading-text">Analyzing document structure</p>
-                <div class="progress-bar-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="loading-progress"></div>
-                    </div>
-                </div>
+            <div class="completion-actions">
+                <button id="upload-new-btn" class="primary-btn">Upload New Document</button>
+                <button id="back-to-dashboard-btn" class="secondary-btn">Back to Dashboard</button>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <!-- Study View -->
-        <section id="view-study" class="view">
-            <div class="study-header">
-                <button class="back-to-dash secondary-btn"><i class="fa-solid fa-arrow-left"></i> Exit</button>
-                <div class="progress-info">
-                    <div class="progress-text">
-                        Card <span id="current-card-num">1</span> of <span id="total-cards-num">10</span>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-fill" id="study-progress"></div>
-                    </div>
-                </div>
+    <div class="app-container hidden" id="main-app">
+        <!-- Sidebar Navigation -->
+        <nav class="glass-nav">
+            <div class="logo">
+                <i class="fa-solid fa-bolt"></i>
+                <span>FlashMind</span>
             </div>
+            <ul class="nav-links">
+                <li class="active" data-view="dashboard">
+                    <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+                </li>
+                <li data-view="upload">
+                    <i class="fa-solid fa-plus"></i> <span>Create</span>
+                </li>
+                <li data-view="profile">
+                    <i class="fa-solid fa-user"></i> <span>Profile</span>
+                </li>
+            </ul>
+            <div class="nav-footer">
+                <button id="theme-toggle" class="icon-btn">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button id="logout-btn" class="icon-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </nav>
 
-            <div class="flashcard-container">
-                <div class="flashcard" id="flashcard">
-                    <div class="card-inner">
-                        <div class="card-front glass-panel">
-                            <span class="card-type-badge" id="card-type">QA</span>
-                            <div class="card-content">
-                                <h3 id="card-question">Question?</h3>
-                                <div id="mcq-options" class="mcq-options hidden"></div>
-                            </div>
-                            <div class="card-hint">Click to flip</div>
+        <main class="content-area">
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="view active-view">
+                <header class="view-header">
+                    <div class="welcome-text">
+                        <h1>Hello, <span id="user-name-display">Student</span>! 👋</h1>
+                        <p>Ready to master something new today?</p>
+                    </div>
+                    <div class="user-stats-pill glass-panel">
+                        <div class="stat-item">
+                            <i class="fa-solid fa-fire text-orange"></i>
+                            <span id="streak-display">0</span>
                         </div>
-                        <div class="card-back glass-panel">
-                            <div class="card-content">
-                                <h3 class="answer-label">Answer</h3>
-                                <p id="card-answer">Answer.</p>
-                                <div class="explanation-box">
-                                    <h4><i class="fa-solid fa-lightbulb"></i> Explanation</h4>
-                                    <p id="card-explanation">Explanation text.</p>
+                        <div class="stat-item">
+                            <i class="fa-solid fa-star text-yellow"></i>
+                            <span id="xp-display">0</span> XP
+                        </div>
+                        <div class="stat-item">
+                            <i class="fa-solid fa-trophy text-purple"></i>
+                            Lvl <span id="level-display">1</span>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="dashboard-grid">
+                    <div class="glass-panel stat-card">
+                        <h3>Decks Created</h3>
+                        <p class="big-number" id="decks-count">0</p>
+                    </div>
+                    <div class="glass-panel stat-card">
+                        <h3>Cards Mastered</h3>
+                        <p class="big-number" id="cards-mastered">0</p>
+                    </div>
+                    <div class="glass-panel action-card" id="quick-create-btn">
+                        <div class="icon-circle">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <h3>Create New Deck</h3>
+                        <p>Upload a PDF to start</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upload View -->
+            <section id="view-upload" class="view">
+                <div class="upload-container">
+                    <div class="hero-text">
+                        <h1>Create Flashcards</h1>
+                        <p>AI-powered generation from your documents</p>
+                    </div>
+
+                    <div class="upload-area glass-panel" id="drop-zone">
+                        <input type="file" id="file-input" accept=".pdf" hidden>
+                        <div class="upload-content">
+                            <div class="upload-icon-wrapper">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <h3>Drag & Drop PDF</h3>
+                            <p>or click to browse</p>
+                        </div>
+                    </div>
+
+                    <div class="options-panel glass-panel">
+                        <div class="option-group">
+                            <label>Difficulty Level</label>
+                            <div class="difficulty-selector">
+                                <div class="difficulty-option" data-value="easy">
+                                    <i class="fa-solid fa-smile"></i>
+                                    <span>Easy</span>
+                                </div>
+                                <div class="difficulty-option active" data-value="medium">
+                                    <i class="fa-solid fa-meh"></i>
+                                    <span>Medium</span>
+                                </div>
+                                <div class="difficulty-option" data-value="hard">
+                                    <i class="fa-solid fa-fire"></i>
+                                    <span>Hard</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="option-group">
+                            <label>Number of Cards: <span id="card-count-display">20</span></label>
+                            <input type="range" id="card-count-slider" min="5" max="50" value="20" step="5">
+                            <div class="slider-labels">
+                                <span>5</span>
+                                <span>50</span>
+                            </div>
+                        </div>
+                        <button id="generate-btn" class="primary-btn" disabled>
+                            Generate Flashcards <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading View -->
+            <section id="view-loading" class="view">
+                <div class="loader-container">
+                    <div class="loader-ring"></div>
+                    <h2 class="gradient-text">Generating Knowledge...</h2>
+                    <p id="loading-text">Analyzing document structure</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="loading-progress"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study View -->
+            <section id="view-study" class="view">
+                <div class="study-header">
+                    <button class="back-to-dash secondary-btn"><i class="fa-solid fa-arrow-left"></i> Exit</button>
+                    <div class="progress-info">
+                        <div class="progress-text">
+                            Card <span id="current-card-num">1</span> of <span id="total-cards-num">10</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="study-progress"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <div class="card-inner">
+                            <div class="card-front glass-panel">
+                                <span class="card-type-badge" id="card-type">QA</span>
+                                <div class="card-content">
+                                    <h3 id="card-question">Question?</h3>
+                                    <div id="mcq-options" class="mcq-options hidden"></div>
+                                </div>
+                                <div class="card-hint">Click to flip</div>
+                            </div>
+                            <div class="card-back glass-panel">
+                                <div class="card-content">
+                                    <h3 class="answer-label">Answer</h3>
+                                    <p id="card-answer">Answer.</p>
+                                    <div class="explanation-box">
+                                        <h4><i class="fa-solid fa-lightbulb"></i> Explanation</h4>
+                                        <p id="card-explanation">Explanation text.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="study-controls">
-                <button id="prev-btn" class="nav-btn-large" disabled>
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button id="flip-btn" class="primary-btn flip-btn-large">Show Answer</button>
-                <button id="next-btn" class="nav-btn-large">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-        </section>
+                <div class="study-controls">
+                    <button id="prev-btn" class="nav-btn-large" disabled>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button id="flip-btn" class="primary-btn flip-btn-large">Show Answer</button>
+                    <button id="next-btn" class="nav-btn-large">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
 
-        <!-- Profile View -->
-        <section id="view-profile" class="view">
-            <div class="profile-container">
-                <div class="profile-header glass-panel">
-                    <div class="profile-avatar">
-                        <i class="fa-solid fa-user"></i>
+            <!-- Profile View -->
+            <section id="view-profile" class="view">
+                <div class="profile-container">
+                    <div class="profile-header glass-panel">
+                        <div class="profile-avatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h2 id="profile-username">Username</h2>
+                            <p id="profile-email">email@example.com</p>
+                            <p class="join-date">Joined: <span id="profile-join-date">Today</span></p>
+                        </div>
                     </div>
-                    <div class="profile-info">
-                        <h2 id="profile-username">Username</h2>
-                        <p id="profile-email">email@example.com</p>
-                        <p class="join-date">Joined: <span id="profile-join-date">Today</span></p>
+                    <div class="profile-stats-grid">
+                        <div class="glass-panel stat-card">
+                            <h3>Total XP</h3>
+                            <p class="big-number" id="profile-xp">0</p>
+                        </div>
+                        <div class="glass-panel stat-card">
+                            <h3>Current Level</h3>
+                            <p class="big-number" id="profile-level">1</p>
+                        </div>
+                        <div class="glass-panel stat-card">
+                            <h3>Streak</h3>
+                            <p class="big-number" id="profile-streak">0 🔥</p>
+                        </div>
+                        <div class="glass-panel stat-card">
+                            <h3>Decks Completed</h3>
+                            <p class="big-number" id="profile-decks">0</p>
+                        </div>
                     </div>
                 </div>
-                <div class="profile-stats-grid">
-                    <div class="glass-panel stat-card">
-                        <h3>Total XP</h3>
-                        <p class="big-number" id="profile-xp">0</p>
-                    </div>
-                    <div class="glass-panel stat-card">
-                        <h3>Current Level</h3>
-                        <p class="big-number" id="profile-level">1</p>
-                    </div>
-                    <div class="glass-panel stat-card">
-                        <h3>Streak</h3>
-                        <p class="big-number" id="profile-streak">0 🔥</p>
-                    </div>
-                    <div class="glass-panel stat-card">
-                        <h3>Decks Completed</h3>
-                        <p class="big-number" id="profile-decks">0</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+            </section>
+        </main>
     </div>
 
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-    </body>
+</body>
 
 </html>
